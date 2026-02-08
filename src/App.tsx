@@ -29,7 +29,7 @@ function App() {
       </div>
 
       {/* Money saved card */}
-      <div className="bg-gradient-to-br from-primary to-primary-dark rounded-xl p-4 mb-4 text-white shadow-lg">
+      <div className="bg-linear-to-br from-primary to-primary-dark rounded-xl p-4 mb-4 text-white shadow-lg">
         <p className="text-xs uppercase tracking-wide opacity-80">Money Saved</p>
         <p className="text-3xl font-bold">$247.50</p>
         <p className="text-xs opacity-80 mt-1">↑ $34.99 this week</p>
