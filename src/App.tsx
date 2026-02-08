@@ -1,15 +1,7 @@
 import { Button } from '@heroui/button';
 import { Card, CardBody, Tab, Tabs } from '@heroui/react';
 import { useState, useEffect } from 'react';
-
-interface StorageData {
-  count?: number;
-  moneySaved?: number;
-  weeklySaved?: number;
-  blockedPurchases?: number;
-  totalImpulses?: number;
-  impulsesResisted?: number;
-}
+import type { StorageData } from './storage';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -33,13 +25,13 @@ function App() {
       'blockedPurchases',
       'totalImpulses',
       'impulsesResisted'
-    ]).then((result: StorageData) => {
-      if (result.count) setCount(result.count);
-      if (result.moneySaved) setMoneySaved(result.moneySaved);
-      if (result.weeklySaved) setWeeklySaved(result.weeklySaved);
-      if (result.blockedPurchases) setBlockedPurchases(result.blockedPurchases);
-      if (result.totalImpulses) setTotalImpulses(result.totalImpulses);
-      if (result.impulsesResisted) setImpulsesResisted(result.impulsesResisted);
+    ]).then((result: Partial<StorageData>) => {
+      setCount(result.count || 0);
+      setMoneySaved(result.moneySaved || 0);
+      setWeeklySaved(result.weeklySaved || 0);
+      setBlockedPurchases(result.blockedPurchases || 0);
+      setTotalImpulses(result.totalImpulses || 0);
+      setImpulsesResisted(result.impulsesResisted || 0);
     });
   }, []);
 
@@ -47,22 +39,22 @@ function App() {
   useEffect(() => {
     const handleStorageChange = (changes: { [key: string]: browser.Storage.StorageChange }) => {
       if (changes.moneySaved) {
-        setMoneySaved(changes.moneySaved.newValue as number || 0);
+        setMoneySaved((changes.moneySaved.newValue as number) || 0);
       }
       if (changes.weeklySaved) {
-        setWeeklySaved(changes.weeklySaved.newValue as number || 0);
+        setWeeklySaved((changes.weeklySaved.newValue as number) || 0);
       }
       if (changes.count) {
-        setCount(changes.count.newValue as number || 0);
+        setCount((changes.count.newValue as number) || 0);
       }
       if (changes.blockedPurchases) {
-        setBlockedPurchases(changes.blockedPurchases.newValue as number || 0);
+        setBlockedPurchases((changes.blockedPurchases.newValue as number) || 0);
       }
       if (changes.totalImpulses) {
-        setTotalImpulses(changes.totalImpulses.newValue as number || 0);
+        setTotalImpulses((changes.totalImpulses.newValue as number) || 0);
       }
       if (changes.impulsesResisted) {
-        setImpulsesResisted(changes.impulsesResisted.newValue as number || 0);
+        setImpulsesResisted((changes.impulsesResisted.newValue as number) || 0);
       }
     };
 
@@ -87,7 +79,7 @@ function App() {
         <p className="text-xs text-text-muted mt-1">Protecting your wallet</p>
       </div>
 
-      {/* Money saved card - now using state */}
+      {/* Money saved card */}
       <div className="bg-linear-to-br from-primary to-primary-dark rounded-xl p-4 mb-4 text-white shadow-lg">
         <p className="text-xs uppercase tracking-wide opacity-80">Money Saved</p>
         <p className="text-3xl font-bold">${moneySaved.toFixed(2)}</p>
