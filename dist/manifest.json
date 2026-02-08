@@ -1,11 +1,18 @@
 {
-  "name": "React Extension",
-  "description": "Chrome extension with React and Tailwind",
+  "name": "Impulse Guard",
+  "description": "Firefox extension with React and Tailwind - Protecting your wallet",
   "version": "1.0",
   "manifest_version": 3,
   "permissions": ["storage"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": "static/icon.png"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-script.js"],
+      "run_at": "document_idle"
+    }
+  ]
 }

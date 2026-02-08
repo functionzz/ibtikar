@@ -2,37 +2,96 @@ import { Button } from '@heroui/button';
 import { Card, CardBody, Tab, Tabs } from '@heroui/react';
 import { useState, useEffect } from 'react';
 
+interface StorageData {
+  count?: number;
+  moneySaved?: number;
+  weeklySaved?: number;
+  blockedPurchases?: number;
+  totalImpulses?: number;
+  impulsesResisted?: number;
+}
+
 function App() {
   const [count, setCount] = useState(0);
+  const [moneySaved, setMoneySaved] = useState(0);
+  const [weeklySaved, setWeeklySaved] = useState(0);
+  const [blockedPurchases, setBlockedPurchases] = useState(0);
+  const [totalImpulses, setTotalImpulses] = useState(0);
+  const [impulsesResisted, setImpulsesResisted] = useState(0);
 
+  // Calculate success rate
+  const successRate = totalImpulses > 0 
+    ? Math.round((blockedPurchases / totalImpulses) * 100) 
+    : 0;
+
+  // Load data from storage on mount
   useEffect(() => {
-    chrome.storage.local.get(['count'], (result) => {
-      if (result.count) {
-        setCount(result.count);
-      }
+    browser.storage.local.get([
+      'count', 
+      'moneySaved', 
+      'weeklySaved',
+      'blockedPurchases',
+      'totalImpulses',
+      'impulsesResisted'
+    ]).then((result: StorageData) => {
+      if (result.count) setCount(result.count);
+      if (result.moneySaved) setMoneySaved(result.moneySaved);
+      if (result.weeklySaved) setWeeklySaved(result.weeklySaved);
+      if (result.blockedPurchases) setBlockedPurchases(result.blockedPurchases);
+      if (result.totalImpulses) setTotalImpulses(result.totalImpulses);
+      if (result.impulsesResisted) setImpulsesResisted(result.impulsesResisted);
     });
+  }, []);
+
+  // Listen for storage changes in real-time
+  useEffect(() => {
+    const handleStorageChange = (changes: { [key: string]: browser.Storage.StorageChange }) => {
+      if (changes.moneySaved) {
+        setMoneySaved(changes.moneySaved.newValue as number || 0);
+      }
+      if (changes.weeklySaved) {
+        setWeeklySaved(changes.weeklySaved.newValue as number || 0);
+      }
+      if (changes.count) {
+        setCount(changes.count.newValue as number || 0);
+      }
+      if (changes.blockedPurchases) {
+        setBlockedPurchases(changes.blockedPurchases.newValue as number || 0);
+      }
+      if (changes.totalImpulses) {
+        setTotalImpulses(changes.totalImpulses.newValue as number || 0);
+      }
+      if (changes.impulsesResisted) {
+        setImpulsesResisted(changes.impulsesResisted.newValue as number || 0);
+      }
+    };
+
+    browser.storage.onChanged.addListener(handleStorageChange);
+
+    return () => {
+      browser.storage.onChanged.removeListener(handleStorageChange);
+    };
   }, []);
 
   const handleClick = () => {
     const newCount = count + 1;
     setCount(newCount);
-    chrome.storage.local.set({ count: newCount });
+    browser.storage.local.set({ count: newCount });
   };
 
   return (
     <div className="w-80 p-5 bg-background">
-      {/* Make a top menu with Impulse Guard logo */}
       {/* Header with gold accent */}
       <div className="text-center mb-4">
         <h1 className="text-2xl font-bold text-secondary">💰 Impulse Guard</h1>
         <p className="text-xs text-text-muted mt-1">Protecting your wallet</p>
       </div>
 
-      {/* Money saved card */}
+      {/* Money saved card - now using state */}
       <div className="bg-linear-to-br from-primary to-primary-dark rounded-xl p-4 mb-4 text-white shadow-lg">
         <p className="text-xs uppercase tracking-wide opacity-80">Money Saved</p>
-        <p className="text-3xl font-bold">$247.50</p>
-        <p className="text-xs opacity-80 mt-1">↑ $34.99 this week</p>
+        <p className="text-3xl font-bold">${moneySaved.toFixed(2)}</p>
+        <p className="text-xs opacity-80 mt-1">↑ ${weeklySaved.toFixed(2)} this week</p>
       </div>
 
       <Tabs aria-label="Options" fullWidth className="mb-4">
@@ -41,15 +100,15 @@ function App() {
             <CardBody className="text-sm">
               <div className="flex justify-between py-2 border-b border-border">
                 <span className="text-text-muted">Blocked purchases</span>
-                <span className="font-semibold text-text">12</span>
+                <span className="font-semibold text-text">{blockedPurchases}</span>
               </div>
               <div className="flex justify-between py-2 border-b border-border">
                 <span className="text-text-muted">Success rate</span>
-                <span className="font-semibold text-savings">83%</span>
+                <span className="font-semibold text-savings">{successRate}%</span>
               </div>
               <div className="flex justify-between py-2">
                 <span className="text-text-muted">Impulses resisted</span>
-                <span className="font-semibold text-gold">10</span>
+                <span className="font-semibold text-gold">{impulsesResisted}</span>
               </div>
             </CardBody>
           </Card>
