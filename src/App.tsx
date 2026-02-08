@@ -88,22 +88,20 @@ function App() {
 
       <Tabs aria-label="Options" fullWidth className="mb-4">
         <Tab key="stats" title="📊 Stats">
-          <Card className="bg-background-muted border border-border">
-            <CardBody className="text-sm">
-              <div className="flex justify-between py-2 border-b border-border">
-                <span className="text-text-muted">Blocked purchases</span>
-                <span className="font-semibold text-text">{blockedPurchases}</span>
-              </div>
-              <div className="flex justify-between py-2 border-b border-border">
-                <span className="text-text-muted">Success rate</span>
-                <span className="font-semibold text-savings">{successRate}%</span>
-              </div>
-              <div className="flex justify-between py-2">
-                <span className="text-text-muted">Impulses resisted</span>
-                <span className="font-semibold text-gold">{impulsesResisted}</span>
-              </div>
-            </CardBody>
-          </Card>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-background-muted border border-border rounded-xl p-3 text-center">
+              <p className="text-2xl font-bold text-primary">{blockedPurchases}</p>
+              <p className="text-xs text-text-muted mt-1">Blocked</p>
+            </div>
+            <div className="bg-background-muted border border-border rounded-xl p-3 text-center">
+              <p className="text-2xl font-bold text-gold">{impulsesResisted}</p>
+              <p className="text-xs text-text-muted mt-1">Resisted</p>
+            </div>
+            <div className="bg-background-muted border border-border rounded-xl p-3 text-center">
+              <p className="text-2xl font-bold text-savings">{successRate}%</p>
+              <p className="text-xs text-text-muted mt-1">Success</p>
+            </div>
+          </div>
         </Tab>
         <Tab key="pending" title="⏳ Pending">
           <Card className="bg-background-muted border border-border">
