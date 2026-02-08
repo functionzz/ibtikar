@@ -5,6 +5,7 @@ import { copyFileSync, cpSync, existsSync } from 'fs';
 import tsconfigPaths from "vite-tsconfig-paths"
 
 export default defineConfig({
+  base: './',
   plugins: [
     react(),
     tsconfigPaths(),
@@ -26,6 +27,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         popup: resolve(__dirname, 'popup.html'),
+        content: resolve(__dirname, 'src/content/detector.ts'),
+        background: resolve(__dirname, 'src/background/service-worker.ts'),
       },
       output: {
         entryFileNames: '[name].js',

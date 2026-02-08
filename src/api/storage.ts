@@ -34,6 +34,7 @@ const DEFAULT_STATISTICS: Statistics = {
 };
 
 // Settings
+// This function gets the user's settings from local storage and merges it with local storage
 export async function getSettings(): Promise<Settings> {
   return new Promise((resolve) => {
     chrome.storage.local.get(['settings'], (result) => {
