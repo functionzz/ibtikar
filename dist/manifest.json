@@ -1,0 +1,11 @@
+{
+  "name": "React Extension",
+  "description": "Chrome extension with React and Tailwind",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": ["storage"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "static/icon.png"
+  }
+}

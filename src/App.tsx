@@ -1,0 +1,80 @@
+import { Button } from '@heroui/button';
+import { Card, CardBody, Tab, Tabs } from '@heroui/react';
+import { useState, useEffect } from 'react';
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    chrome.storage.local.get(['count'], (result) => {
+      if (result.count) {
+        setCount(result.count);
+      }
+    });
+  }, []);
+
+  const handleClick = () => {
+    const newCount = count + 1;
+    setCount(newCount);
+    chrome.storage.local.set({ count: newCount });
+  };
+
+  return (
+    <div className="w-80 p-5 bg-background">
+      {/* Make a top menu with Impulse Guard logo */}
+      {/* Header with gold accent */}
+      <div className="text-center mb-4">
+        <h1 className="text-2xl font-bold text-secondary">💰 Impulse Guard</h1>
+        <p className="text-xs text-text-muted mt-1">Protecting your wallet</p>
+      </div>
+
+      {/* Money saved card */}
+      <div className="bg-gradient-to-br from-primary to-primary-dark rounded-xl p-4 mb-4 text-white shadow-lg">
+        <p className="text-xs uppercase tracking-wide opacity-80">Money Saved</p>
+        <p className="text-3xl font-bold">$247.50</p>
+        <p className="text-xs opacity-80 mt-1">↑ $34.99 this week</p>
+      </div>
+
+      <Tabs aria-label="Options" fullWidth className="mb-4">
+        <Tab key="stats" title="📊 Stats">
+          <Card className="bg-background-muted border border-border">
+            <CardBody className="text-sm">
+              <div className="flex justify-between py-2 border-b border-border">
+                <span className="text-text-muted">Blocked purchases</span>
+                <span className="font-semibold text-text">12</span>
+              </div>
+              <div className="flex justify-between py-2 border-b border-border">
+                <span className="text-text-muted">Success rate</span>
+                <span className="font-semibold text-savings">83%</span>
+              </div>
+              <div className="flex justify-between py-2">
+                <span className="text-text-muted">Impulses resisted</span>
+                <span className="font-semibold text-gold">10</span>
+              </div>
+            </CardBody>
+          </Card>
+        </Tab>
+        <Tab key="pending" title="⏳ Pending">
+          <Card className="bg-background-muted border border-border">
+            <CardBody className="text-sm text-text-muted">
+              No pending purchases. You're doing great! 🎉
+            </CardBody>
+          </Card>
+        </Tab>
+      </Tabs>
+
+      <Button
+        onPress={handleClick}
+        className="w-full py-3 bg-gold hover:bg-tertiary text-secondary font-semibold rounded-lg transition-colors shadow-md"
+      >
+        View Savings Report
+      </Button>
+
+      <p className="text-center mt-3 text-text-muted text-xs">
+        Guarding since Jan 2025 • <span className="text-savings font-medium">{count} sessions</span>
+      </p>
+    </div>
+  );
+}
+
+export default App;
