@@ -6,6 +6,9 @@ import tsconfigPaths from "vite-tsconfig-paths"
 
 export default defineConfig({
   base: './',
+  define: {
+    'import.meta.env.CLAUDE_API_KEY': JSON.stringify(process.env.CLAUDE_API_KEY),
+  },
   plugins: [
     react(),
     tsconfigPaths(),
